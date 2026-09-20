@@ -1,0 +1,142 @@
+{
+    "schema-version": 1.0,
+    "content": [
+        {
+            "name": "hex-relocate",
+            "description": "Relocates Main CM33 Secure image to S-bus address space",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "hex-relocate",
+                    "inputs": [
+                        {
+                            "file": "../build/project_hex/main_cm33_s.hex",
+                            "regions": [
+                                {
+                                    "start": "{{ CYMEM_CM33_0_S_m33s_nvm_C_S_START }}",
+                                    "size": "{{ CYMEM_CM33_0_S_m33s_nvm_SIZE }}",
+                                    "dest": "{{ CYMEM_CM33_0_S_m33s_nvm_S_START }}"
+                                }
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "file": "../build/project_hex/main_cm33_s_shifted.hex"
+                        }
+                    ],
+                    "extra_config" : [
+                        {
+                            "project" : "main_cm33_s",
+                            "debug_config_name" : "main_cm33_s",
+                            "default" : false,
+                            "build_dependency" : "project"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "hex-relocate",
+            "description": "Relocates PPCA Core 0 image to Flash",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "hex-relocate",
+                    "inputs": [
+                        {
+                            "file": "../build/project_hex/ppca_cm33_0.hex",
+                            "regions": [
+                                {
+                                    "start": "{{ CYMEM_CM33_0_S_ppca0_code_OFFSET }}",
+                                    "size": "{{ CYMEM_CM33_0_m33s_ppca0_nvm_SIZE }}",
+                                    "dest": "{{ CYMEM_CM33_0_S_m33s_ppca0_nvm_S_START }}"
+                                }
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "file": "../build/project_hex/ppca_cm33_0_flash.hex"
+                        }
+                    ],
+                    "extra_config" : [
+                        {
+                            "project" : "ppca_cm33_0",
+                            "debug_config_name" : "ppca_cm33_0",
+                            "default" : false,
+                            "build_dependency" : "project"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "hex-relocate",
+            "description": "Relocates PPCA Core 1 image to Flash",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "hex-relocate",
+                    "inputs": [
+                        {
+                            "file": "../build/project_hex/ppca_cm33_1.hex",
+                            "regions": [
+                                {
+                                    "start": "{{ CYMEM_CM33_0_S_ppca1_code_OFFSET }}",
+                                    "size": "{{ CYMEM_CM33_0_m33s_ppca1_nvm_SIZE }}",
+                                    "dest": "{{ CYMEM_CM33_0_S_m33s_ppca1_nvm_S_START }}"
+                                }
+                            ]
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "file": "../build/project_hex/ppca_cm33_1_flash.hex"
+                        }
+                    ],
+                    "extra_config" : [
+                        {
+                            "project" : "ppca_cm33_1",
+                            "debug_config_name" : "ppca_cm33_1",
+                            "default" : false,
+                            "build_dependency" : "project"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "merge",
+            "description": "Merges two or more hex/bin files into a single file",
+            "enabled": true,
+            "commands": [
+                {
+                    "command": "merge",
+                    "inputs": [
+                        {
+                            "description": "Main CM33 Secure application",
+                            "file": "../build/project_hex/main_cm33_s_shifted.hex"
+                        },
+                        {
+                            "description": "PPCA CM33 Core 0 application relocated to flash",
+                            "file": "../build/project_hex/ppca_cm33_0_flash.hex"
+                        },
+                        {
+                            "description": "PPCA CM33 Core 1 application relocated to flash",
+                            "file": "../build/project_hex/ppca_cm33_1_flash.hex"
+                        }
+                    ],
+                    "outputs": [
+                        {
+                            "description": "CM33 Secure + PPCA 0 + PPCA 1",
+                            "file": "../build/app_combined.hex",
+                            "format": "ihex",
+                            "overlap": "ignore"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
